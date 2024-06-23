@@ -19,10 +19,11 @@
             padding: 0;
             margin: 0;
             display: flex;
-            justify-content: space-around;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         nav ul li {
-            float: left;
+            margin: 0;
         }
         nav ul li a {
             display: block;
@@ -35,17 +36,27 @@
             background-color: #ddd;
             color: black;
         }
-        .rss-column {
-            float: left;
-            width: 32%;
-            padding: 1%;
-            box-sizing: border-box;
-        }
         .rss-container {
-            width: 100%;
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
+            padding: 1%;
+            box-sizing: border-box;
+        }
+        .rss-column {
+            width: 100%;
+            padding: 1%;
+            box-sizing: border-box;
+        }
+        @media (min-width: 600px) {
+            .rss-column {
+                width: 48%;
+            }
+        }
+        @media (min-width: 900px) {
+            .rss-column {
+                width: 32%;
+            }
         }
         h2 {
             text-align: center;
@@ -71,7 +82,7 @@
     <nav>
         <ul>
             <li><a href="../index.html">World News</a></li>
-            <li><a href="./pages/tech.html">Tech</a></li>
+            <li><a href="./tech.html">Tech</a></li>
         </ul>
     </nav>
 
