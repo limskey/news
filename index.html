@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>News</title>
+    <title>C&P</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -55,7 +55,7 @@
         }
         @media (min-width: 900px) {
             .rss-column {
-                width: 32%;
+                width: 100%;
             }
         }
         h2 {
@@ -90,36 +90,17 @@
 
     <nav>
         <ul>
-            <li><a href="../index.html">World News</a></li>
+            <li><a href="../index.html">Top News</a></li>
+            <li><a href="./pages/world.html">World News</a></li>
             <li><a href="./pages/tech.html">Tech</a></li>
         </ul>
     </nav>
 
-    <h1><center>World News</center></h1>
+    <h1><center>Top News</center></h1>
     <div class="rss-container">
         <div class="rss-column">
-            <h2>Huffington Post</h2>
-            <div id="rss-feed-huffpost"></div>
-        </div>
-        <div class="rss-column">
-            <h2>Washington Post</h2>
-            <div id="rss-feed-washingtonpost"></div>
-        </div>      
-        <div class="rss-column">
-            <h2>The Guardian</h2>
-            <div id="rss-feed-guardian"></div>
-        </div>
-        <div class="rss-column">
-            <h2>BBC</h2>
-            <div id="rss-feed-bbc"></div>
-        </div>
-        <div class="rss-column">
-            <h2>Washington Times</h2>
-            <div id="rss-feed-washingtontimes"></div>
-        </div>      
-        <div class="rss-column">
-            <h2>France 24</h2>
-            <div id="rss-feed-france24"></div>
+            <h2></h2>
+            <div id="rss-feed-topnews"></div>
         </div>
     </div>
 
@@ -130,12 +111,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         const feeds = [
-            { id: "rss-feed-huffpost", url: "https://www.huffpost.com/section/world-news/feed" },
-            { id: "rss-feed-washingtonpost", url: "http://feeds.washingtonpost.com/rss/world" },
-            { id: "rss-feed-guardian", url: "http://www.theguardian.com/world/rss" },
-            { id: "rss-feed-bbc", url: "http://feeds.bbci.co.uk/news/world/rss.xml" },
-            { id: "rss-feed-washingtontimes", url: "https://www.washingtontimes.com/rss/headlines/news/world/" },
-            { id: "rss-feed-france24", url: "https://www.france24.com/en/rss" },
+            { id: "rss-feed-topnews", url: "https://news.google.com/news/rss" },
         ];
 
         function fetchFeeds() {
