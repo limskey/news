@@ -88,43 +88,17 @@
         </ul>
     </nav>
 
-    <h1><center>Tech News</center></h1>
+    <h1><center>Top Tech News</center></h1>
     <div class="rss-container">
         <div class="rss-column">
-            <h2>Huffington Post</h2>
-            <div id="rss-feed-huffpost"></div>
-        </div>
-        <div class="rss-column">
-            <h2>Washington Post</h2>
-            <div id="rss-feed-washingtonpost"></div>
-        </div>      
-        <div class="rss-column">
-            <h2>The Guardian</h2>
-            <div id="rss-feed-guardian"></div>
-        </div>
-        <div class="rss-column">
-            <h2>BBC</h2>
-            <div id="rss-feed-bbc"></div>
-        </div>
-        <div class="rss-column">
-            <h2>Washington Times</h2>
-            <div id="rss-feed-washingtontimes"></div>
-        </div>      
-        <div class="rss-column">
-            <h2>France 24</h2>
-            <div id="rss-feed-france24"></div>
+            <div id="rss-feed-technews"></div>
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         const feeds = [
-            { id: "rss-feed-huffpost", url: "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen" },
-            { id: "rss-feed-washingtonpost", url: "http://feeds.washingtonpost.com/rss/business/technology?itid=lk_inline_manual_30" },
-            { id: "rss-feed-guardian", url: "https://www.theguardian.com/us/technology/rss" },
-            { id: "rss-feed-bbc", url: "http://feeds.bbci.co.uk/news/technology/rss.xml" },
-            { id: "rss-feed-washingtontimes", url: "https://www.washingtontimes.com/rss/headlines/culture/technology/" },
-            { id: "rss-feed-france24", url: "https://www.france24.com/en/business/rss" },
+            { id: "rss-feed-technews", url: "https://news.google.com/rss/search?q=technology&hl=en-US&gl=US&ceid=US:en" },
         ];
 
         function fetchFeeds() {
