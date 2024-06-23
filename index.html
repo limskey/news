@@ -117,20 +117,22 @@
 
     function fetchFeeds() {
             feeds.forEach(feed => {
-                const apiUrl = https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)};
+                const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`;
                 $.getJSON(apiUrl, function(data) {
-                    const feedContainer = $(#${feed.id});
+                    const feedContainer = $(`#${feed.id}`);
                     feedContainer.empty(); // Clear the existing feed items
                     data.items.forEach(item => {
-                        const feedItem = 
+                        const feedItem = `
                             <div class="rss-item">
                                 <h3><a href="${item.link}" target="_blank">${item.title}</a></h3>
                                 <p>${item.pubDate}</p>
                                 <p>${item.description}</p>
                             </div>
-                        ;
+                        `;
                         feedContainer.append(feedItem);
                     });
+                }).fail(function() {
+                    console.error("Error fetching feed: ", feed.url);
                 });
             });
         }
