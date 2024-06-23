@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance News</title>
+    <title>News</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -19,10 +19,11 @@
             padding: 0;
             margin: 0;
             display: flex;
-            justify-content: space-around;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         nav ul li {
-            float: left;
+            margin: 0;
         }
         nav ul li a {
             display: block;
@@ -35,17 +36,27 @@
             background-color: #ddd;
             color: black;
         }
-        .rss-column {
-            float: left;
-            width: 33%;
-            padding: 1%;
-            box-sizing: border-box;
-        }
         .rss-container {
-            width: 100%;
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
+            padding: 1%;
+            box-sizing: border-box;
+        }
+        .rss-column {
+            width: 100%;
+            padding: 1%;
+            box-sizing: border-box;
+        }
+        @media (min-width: 600px) {
+            .rss-column {
+                width: 48%;
+            }
+        }
+        @media (min-width: 900px) {
+            .rss-column {
+                width: 32%;
+            }
         }
         h2 {
             text-align: center;
@@ -64,19 +75,28 @@
             text-decoration: none;
             color: blue;
         }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: relative;
+            width: 100%;
+            bottom: 0;
+        }
     </style>
 </head>
 <body>
 
     <nav>
         <ul>
-            <li><a href="../index.html">World News</a></li>
+            <li><a href="../index.html">Top News</a></li>
+            <li><a href="./world.html">World News</a></li>
             <li><a href="./tech.html">Tech</a></li>
-            <li><a href="./finance.html">Finance</a></li>
         </ul>
     </nav>
 
-    <h1><center>Finance News</center></h1>
+    <h1><center>World News</center></h1>
     <div class="rss-container">
         <div class="rss-column">
             <h2>Huffington Post</h2>
@@ -104,15 +124,19 @@
         </div>
     </div>
 
+    <footer>
+        &copy; 2024 World News Portal. All rights reserved.
+    </footer>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         const feeds = [
-            { id: "rss-feed-huffpost", url: "hhttps://www.huffpost.com/impact/business/feed" },
-            { id: "rss-feed-washingtonpost", url: "http://feeds.washingtonpost.com/rss/business?itid=lk_inline_manual_36" },
-            { id: "rss-feed-guardian", url: "https://www.theguardian.com/us/business/rss" },
-            { id: "rss-feed-bbc", url: "http://feeds.bbci.co.uk/news/business/rss.xml " },
-            { id: "rss-feed-washingtontimes", url: "https://www.washingtontimes.com/rss/headlines/news/business-economy/" },
-            { id: "rss-feed-france24", url: "https://www.france24.com/en/business/rss" },
+            { id: "rss-feed-huffpost", url: "https://www.huffpost.com/section/world-news/feed" },
+            { id: "rss-feed-washingtonpost", url: "http://feeds.washingtonpost.com/rss/world" },
+            { id: "rss-feed-guardian", url: "http://www.theguardian.com/world/rss" },
+            { id: "rss-feed-bbc", url: "http://feeds.bbci.co.uk/news/world/rss.xml" },
+            { id: "rss-feed-washingtontimes", url: "https://www.washingtontimes.com/rss/headlines/news/world/" },
+            { id: "rss-feed-france24", url: "https://www.france24.com/en/rss" },
         ];
 
         function fetchFeeds() {
@@ -130,8 +154,6 @@
                         `;
                         feedContainer.append(feedItem);
                     });
-                }).fail(function(jqxhr, textStatus, error) {
-                    console.error("Error fetching feed:", feed.url, textStatus, error);
                 });
             });
         }
