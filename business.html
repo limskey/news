@@ -121,6 +121,10 @@
                 $.getJSON(apiUrl, function(data) {
                     const feedContainer = $(`#${feed.id}`);
                     feedContainer.empty(); // Clear the existing feed items
+
+                    // Sort items by pubDate descending
+                    data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+
                     data.items.forEach(item => {
                         const feedItem = `
                             <div class="rss-item">
