@@ -115,9 +115,9 @@
             { id: "rss-feed-topnews", url: "https://news.google.com/news/rss" },
         ];
 
-        function fetchFeeds() {
+    function fetchFeeds() {
             feeds.forEach(feed => {
-                const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`;
+                const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}&count=25`;
                 $.getJSON(apiUrl, function(data) {
                     const feedContainer = $(`#${feed.id}`);
                     feedContainer.empty(); // Clear the existing feed items
