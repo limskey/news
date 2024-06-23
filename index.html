@@ -19,10 +19,11 @@
             padding: 0;
             margin: 0;
             display: flex;
-            justify-content: space-around;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         nav ul li {
-            float: left;
+            margin: 0;
         }
         nav ul li a {
             display: block;
@@ -35,17 +36,27 @@
             background-color: #ddd;
             color: black;
         }
-        .rss-column {
-            float: left;
-            width: 32%;
-            padding: 1%;
-            box-sizing: border-box;
-        }
         .rss-container {
-            width: 100%;
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
+            padding: 1%;
+            box-sizing: border-box;
+        }
+        .rss-column {
+            width: 100%;
+            padding: 1%;
+            box-sizing: border-box;
+        }
+        @media (min-width: 600px) {
+            .rss-column {
+                width: 48%;
+            }
+        }
+        @media (min-width: 900px) {
+            .rss-column {
+                width: 32%;
+            }
         }
         h2 {
             text-align: center;
@@ -63,6 +74,15 @@
         .rss-item a {
             text-decoration: none;
             color: blue;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: relative;
+            width: 100%;
+            bottom: 0;
         }
     </style>
 </head>
@@ -103,6 +123,10 @@
         </div>
     </div>
 
+    <footer>
+        &copy; 2024 World News Portal. All rights reserved.
+    </footer>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         const feeds = [
@@ -135,7 +159,7 @@
 
         $(document).ready(function() {
             fetchFeeds(); // Initial fetch
-            setInterval(fetchFeeds, 900000); // Fetch every 30 minutes
+            setInterval(fetchFeeds, 900000); // Fetch every 15 minutes
         });
     </script>
 </body>
