@@ -36,26 +36,26 @@
             background-color: #ddd;
             color: black;
         }
-        .rss-container {
+        .main-container {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
+            justify-content: center;
             padding: 1%;
             box-sizing: border-box;
         }
-        .rss-column {
+        .content-column {
             width: 100%;
             padding: 1%;
             box-sizing: border-box;
         }
         @media (min-width: 600px) {
-            .rss-column {
-                width: 48%;
+            .content-column {
+                width: 70%;
             }
         }
         @media (min-width: 900px) {
-            .rss-column {
-                width: 100%;
+            .content-column {
+                width: 75%;
             }
         }
         h2 {
@@ -90,56 +90,74 @@
 
     <nav>
         <ul>
-            <li><a href="../index.html">Top News</a></li>
-            <li><a href="../world.html">World News</a></li>
-            <li><a href="../tech.html">Tech</a></li>
-            <li><a href="../cyber.html">Cyber</a></li>
-            <li><a href="../business.html">Business</a></li>
-            <li><a href="../science.html">Science</a></li>
-            <li><a href="../health.html">Health</a></li>
+            <li><a href="./index.html">Top News</a></li>
+            <li><a href="./world.html">World News</a></li>
+            <li><a href="./tech.html">Tech</a></li>
+            <li><a href="./cyber.html">Cyber</a></li>
+            <li><a href="./business.html">Business</a></li>
+            <li><a href="./science.html">Science</a></li>
+            <li><a href="./health.html">Health</a></li>
         </ul>
     </nav>
 
-    <h1><center>Top Health News</center></h1>
-    <div class="rss-container">
-        <div class="rss-column">
-            <div id="rss-feed-healthnews"></div>
+    <h1><center>Health News</center></h1>
+    <div class="main-container">
+        <div class="content-column">
+            <div id="rss-feed-topnews"></div>
         </div>
     </div>
-    
+
     <footer>
         &copy; 2024 Complaining & Explaining. All rights reserved.
     </footer>
-    
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         const feeds = [
-            { id: "rss-feed-healthnews", url: "https://news.google.com/rss/headlines/section/topic/HEALTH?hl=en-US&gl=US&ceid=US:en" },
+            { id: "rss-feed-topnews", url: "https://news.google.com/rss/topics/CAAqIQgKIhtDQkFTRGdvSUwyMHZNR3QwTlRFU0FtVnVLQUFQAQ?hl=en-US&gl=US&ceid=US%3Aen" },
         ];
+
+        const maxArticles = 25;
+        let articleCount = 0;
 
         function fetchFeeds() {
             feeds.forEach(feed => {
                 const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`;
-                $.getJSON(apiUrl, function(data) {
-                    const feedContainer = $(`#${feed.id}`);
-                    feedContainer.empty(); // Clear the existing feed items
+                const fetchPage = (page) => {
+                    if (articleCount >= maxArticles) return;
 
-                    // Sort items by pubDate descending
-                    data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+                    $.getJSON(apiUrl + `&page=${page}`, function(data) {
+                        const feedContainer = $(`#${feed.id}`);
+                        
+                        // Sort items by pubDate descending
+                        data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+                        
+                        data.items.forEach(item => {
+                            if (articleCount < maxArticles) {
+                                const feedItem = `
+                                    <div class="rss-item">
+                                        <h3><a href="${item.link}" target="_blank">${item.title}</a></h3>
+                                        <p>${item.pubDate}</p>
+                                        <p>${item.description}</p>
+                                    </div>
+                                `;
+                                feedContainer.append(feedItem);
+                                articleCount++;
+                            }
+                        });
 
-                    data.items.forEach(item => {
-                        const feedItem = `
-                            <div class="rss-item">
-                                <h3><a href="${item.link}" target="_blank">${item.title}</a></h3>
-                                <p>${item.pubDate}</p>
-                                <p>${item.description}</p>
-                            </div>
-                        `;
-                        feedContainer.append(feedItem);
+                        // Check if there are more pages to fetch
+                        if (data.items.length > 0 && articleCount < maxArticles) {
+                            fetchPage(page + 1);
+                        }
+                    }).fail(function() {
+                        console.error("Error fetching feed: ", feed.url);
                     });
-                }).fail(function() {
-                    console.error("Error fetching feed: ", feed.url);
-                });
+                }
+
+                $(`#${feed.id}`).empty(); // Clear the existing feed items
+                articleCount = 0; // Reset the counter
+                fetchPage(1); // Start fetching from the first page
             });
         }
 
