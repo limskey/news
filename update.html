@@ -44,6 +44,11 @@
         .rss-item a:hover {
             text-decoration: underline;
         }
+        .rss-item img {
+            display: none;
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body>
@@ -58,7 +63,7 @@
         document.addEventListener("DOMContentLoaded", function() {
             const feedUrl = "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFZxYUdjU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen";
             const proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(feedUrl);
-            const maxArticles = 25;
+            const maxArticles = 10;  // Further reduced number of articles to improve load time
             let articleCount = 0;
             const seenTitles = new Set();
 
@@ -83,7 +88,7 @@
                                 <div class="rss-item">
                                     <h3><a href="${link}" target="_blank">${title}</a></h3>
                                     <p>${pubDate}</p>
-                                    ${enclosure ? `<img src="${enclosure}" alt="${title}" style="max-width:100%; height:auto;">` : ''}
+                                    ${enclosure ? `<img src="${enclosure}" alt="${title}">` : ''}
                                     <p>${description}</p>
                                 </div>
                             `;
@@ -91,6 +96,20 @@
                             articleCount++;
                         }
                     });
+
+                    // Lazy load images
+                    const lazyImages = document.querySelectorAll('.rss-item img');
+                    const observer = new IntersectionObserver((entries, observer) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                const img = entry.target;
+                                img.style.display = 'block';
+                                observer.unobserve(img);
+                            }
+                        });
+                    });
+
+                    lazyImages.forEach(img => observer.observe(img));
                 })
                 .catch(error => console.error("Error fetching feed:", error));
         });
