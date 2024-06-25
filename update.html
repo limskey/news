@@ -3,120 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple RSS Feed Parser</title>
+    <title>RSS Feed Parser</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .feed-item {
+            margin-bottom: 20px;
+        }
+        .feed-item h3 {
             margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
+            font-size: 1.2em;
         }
-        header {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 1em 0;
+        .feed-item p {
+            margin: 5px 0;
         }
-        .container {
-            width: 80%;
-            margin: 2em auto;
-            background: white;
-            padding: 2em;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .rss-item {
-            border-bottom: 1px solid #ccc;
-            padding: 1em 0;
-            cursor: pointer;
-        }
-        .rss-item:last-child {
-            border-bottom: none;
-        }
-        .rss-item h3 {
-            margin: 0;
-        }
-        .rss-item p {
-            margin: 0.5em 0;
-            display: none; /* Hide details initially */
-        }
-        .rss-item a {
+        .feed-item a {
+            color: #007BFF;
             text-decoration: none;
-            color: #333;
-        }
-        .rss-item a:hover {
-            text-decoration: underline;
-        }
-        .rss-item img {
-            max-width: 100%;
-            height: auto;
-            display: none; /* Hide images initially */
-            margin: 0.5em 0;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>RSS Feed Parser</h1>
-    </header>
-    <div class="container">
-        <div id="rss-feed"></div>
-    </div>
+    <h1>RSS Feed Parser</h1>
+    <div id="feed-container">Loading...</div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const feedUrl = "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFZxYUdjU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen";
-            const proxyUrl = "https://cors-anywhere.herokuapp.com/" + feedUrl;
-            const maxArticles = 25;  // Initial number of articles to load
-            let articleCount = 0;
-            const seenTitles = new Set();
-            const feedContainer = document.getElementById("rss-feed");
-
-            function fetchFeed() {
-                fetch(proxyUrl)
-                    .then(response => response.text())
-                    .then(data => {
-                        const parser = new DOMParser();
-                        const xml = parser.parseFromString(data, "application/xml");
-                        const items = xml.querySelectorAll("item");
-
-                        items.forEach(item => {
-                            if (articleCount < maxArticles && !seenTitles.has(item.querySelector("title").textContent)) {
-                                seenTitles.add(item.querySelector("title").textContent);
-
-                                const title = item.querySelector("title").textContent;
-                                const link = item.querySelector("link").textContent;
-                                const pubDate = item.querySelector("pubDate").textContent;
-                                const description = item.querySelector("description").textContent;
-                                const enclosure = item.querySelector("enclosure") ? item.querySelector("enclosure").getAttribute("url") : '';
-
-                                const feedItem = document.createElement("div");
-                                feedItem.classList.add("rss-item");
-                                feedItem.innerHTML = `
-                                    <h3><a href="${link}" target="_blank">${title}</a></h3>
-                                    <p>${pubDate}</p>
-                                    ${enclosure ? `<img data-src="${enclosure}" alt="${title}" class="lazy">` : ''}
-                                    <p>${description}</p>
-                                `;
-                                feedItem.addEventListener('click', () => {
-                                    const details = feedItem.querySelectorAll('p, img');
-                                    details.forEach(detail => {
-                                        if (detail.style.display === 'none') {
-                                            detail.style.display = 'block';
-                                        } else {
-                                            detail.style.display = 'none';
-                                        }
-                                    });
-                                });
-                                feedContainer.appendChild(feedItem);
-                                articleCount++;
-                            }
-                        });
-                    })
-                    .catch(error => console.error("Error fetching feed:", error));
+        async function fetchRSSFeed(url) {
+            const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+            const response = await fetch(proxyUrl);
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
             }
+            const data = await response.json();
+            const parser = new DOMParser();
+            return parser.parseFromString(data.contents, "text/xml");
+        }
 
-            fetchFeed();
-        });
+        function parseRSSFeed(xml) {
+            const items = xml.querySelectorAll("item");
+            const feedContainer = document.getElementById("feed-container");
+            feedContainer.innerHTML = '';  // Clear the loading text
+
+            items.forEach(item => {
+                const title = item.querySelector("title").textContent;
+                const description = item.querySelector("description").textContent;
+                const link = item.querySelector("link").textContent;
+
+                const feedItem = document.createElement("div");
+                feedItem.className = "feed-item";
+
+                const feedTitle = document.createElement("h3");
+                feedTitle.textContent = title;
+
+                const feedDescription = document.createElement("p");
+                feedDescription.innerHTML = description;
+
+                const feedLink = document.createElement("a");
+                feedLink.href = link;
+                feedLink.textContent = "Read more";
+
+                feedItem.appendChild(feedTitle);
+                feedItem.appendChild(feedDescription);
+                feedItem.appendChild(feedLink);
+
+                feedContainer.appendChild(feedItem);
+            });
+        }
+
+        const rssURL = "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFZxYUdjU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US:en";
+        fetchRSSFeed(rssURL)
+            .then(parseRSSFeed)
+            .catch(error => {
+                const feedContainer = document.getElementById("feed-container");
+                feedContainer.innerHTML = 'Error loading RSS feed: ' + error.message;
+                console.error("Error fetching the RSS feed:", error);
+            });
     </script>
 </body>
 </html>
