@@ -65,7 +65,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const feedUrl = "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFZxYUdjU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen";
-            const proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(feedUrl);
+            const proxyUrl = "https://cors-anywhere.herokuapp.com/" + feedUrl;
             const maxArticles = 10;  // Initial number of articles to load
             let articleCount = 0;
             const seenTitles = new Set();
@@ -73,10 +73,10 @@
 
             function fetchFeed() {
                 fetch(proxyUrl)
-                    .then(response => response.json())
+                    .then(response => response.text())
                     .then(data => {
                         const parser = new DOMParser();
-                        const xml = parser.parseFromString(data.contents, "application/xml");
+                        const xml = parser.parseFromString(data, "application/xml");
                         const items = xml.querySelectorAll("item");
 
                         items.forEach(item => {
