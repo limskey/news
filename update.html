@@ -31,13 +31,25 @@
 
     <script>
         async function fetchRSSFeed(url) {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error('Network response was not ok ' + response.statusText);
+            try {
+                let response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                let text = await response.text();
+                let parser = new DOMParser();
+                return parser.parseFromString(text, "text/xml");
+            } catch (error) {
+                console.warn("Direct fetch failed, trying with CORS proxy...");
+                let proxyUrl = 'https://cors-anywhere.herokuapp.com/' + url;
+                let response = await fetch(proxyUrl);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                let text = await response.text();
+                let parser = new DOMParser();
+                return parser.parseFromString(text, "text/xml");
             }
-            const text = await response.text();
-            const parser = new DOMParser();
-            return parser.parseFromString(text, "text/xml");
         }
 
         function parseRSSFeed(xml) {
