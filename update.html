@@ -1,1 +1,42 @@
-<rssapp-list id="ryQpX2jJJggrsXxZ"></rssapp-list><script src="https://widget.rss.app/v1/list.js" type="text/javascript" async></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google News RSS Feed</title>
+</head>
+<body>
+    <h1>Google News RSS Feed</h1>
+    <div id="rss-feed"></div>
+
+    <script>
+        async function fetchRSS() {
+            const url = 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFZxYUdjU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen';
+            const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+            const data = await response.json();
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(data.contents, 'application/xml');
+            displayRSS(xml);
+        }
+
+        function displayRSS(xml) {
+            const items = xml.querySelectorAll('item');
+            let html = '';
+            items.forEach(item => {
+                const title = item.querySelector('title').textContent;
+                const link = item.querySelector('link').textContent;
+                const description = item.querySelector('description').textContent;
+                html += `
+                    <div>
+                        <h2><a href="${link}" target="_blank">${title}</a></h2>
+                        <p>${description}</p>
+                    </div>
+                `;
+            });
+            document.getElementById('rss-feed').innerHTML = html;
+        }
+
+        fetchRSS();
+    </script>
+</body>
+</html>
