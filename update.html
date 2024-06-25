@@ -66,7 +66,7 @@
         document.addEventListener("DOMContentLoaded", function() {
             const feedUrl = "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFZxYUdjU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen";
             const proxyUrl = "https://cors-anywhere.herokuapp.com/" + feedUrl;
-            const maxArticles = 10;  // Initial number of articles to load
+            const maxArticles = 25;  // Initial number of articles to load
             let articleCount = 0;
             const seenTitles = new Set();
             const feedContainer = document.getElementById("rss-feed");
