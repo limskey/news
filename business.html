@@ -134,43 +134,53 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            fetch('https://raw.githubusercontent.com/limskey/news/main/daily/google-business.xml')
-                .then(response => response.text())
-                .then(data => {
-                    const parser = new DOMParser();
-                    const xmlDoc = parser.parseFromString(data, "application/xml");
-                    const items = xmlDoc.getElementsByTagName("item");
-                    const newsContainer = document.getElementById("news-container");
+            const fetchAndUpdateNews = () => {
+                fetch('https://raw.githubusercontent.com/limskey/news/main/daily/google-business.xml')
+                    .then(response => response.text())
+                    .then(data => {
+                        const parser = new DOMParser();
+                        const xmlDoc = parser.parseFromString(data, "application/xml");
+                        const items = xmlDoc.getElementsByTagName("item");
+                        const newsContainer = document.getElementById("news-container");
 
-                    for (let i = 0; i < items.length; i++) {
-                        const title = items[i].getElementsByTagName("title")[0].textContent;
-                        const link = items[i].getElementsByTagName("link")[0].textContent;
-                        let description = items[i].getElementsByTagName("description")[0].textContent;
-                        const pubDate = items[i].getElementsByTagName("pubDate")[0].textContent;
+                        newsContainer.innerHTML = ""; // Clear previous content
 
-                        // Replace color in description
-                        description = description.replace(/<font color="#6f6f6f">/g, '<font color="darkgreen">');
+                        for (let i = 0; i < items.length; i++) {
+                            const title = items[i].getElementsByTagName("title")[0].textContent;
+                            const link = items[i].getElementsByTagName("link")[0].textContent;
+                            let description = items[i].getElementsByTagName("description")[0].textContent;
+                            const pubDate = items[i].getElementsByTagName("pubDate")[0].textContent;
 
-                        const newsItem = document.createElement("div");
-                        newsItem.classList.add("rss-item");
+                            // Replace color in description
+                            description = description.replace(/<font color="#6f6f6f">/g, '<font color="darkgreen">');
 
-                        const newsTitle = document.createElement("h3");
-                        newsTitle.innerHTML = `<a href="${link}" target="_blank">${title}</a>`;
+                            const newsItem = document.createElement("div");
+                            newsItem.classList.add("rss-item");
 
-                        const newsDescription = document.createElement("p");
-                        newsDescription.innerHTML = description;
+                            const newsTitle = document.createElement("h3");
+                            newsTitle.innerHTML = `<a href="${link}" target="_blank">${title}</a>`;
 
-                        const newsPubDate = document.createElement("p");
-                        newsPubDate.textContent = new Date(pubDate).toLocaleString();
+                            const newsDescription = document.createElement("p");
+                            newsDescription.innerHTML = description;
 
-                        newsItem.appendChild(newsTitle);
-                        newsItem.appendChild(newsDescription);
-                        newsItem.appendChild(newsPubDate);
+                            const newsPubDate = document.createElement("p");
+                            newsPubDate.textContent = new Date(pubDate).toLocaleString();
 
-                        newsContainer.appendChild(newsItem);
-                    }
-                })
-                .catch(error => console.error('Error fetching the XML:', error));
+                            newsItem.appendChild(newsTitle);
+                            newsItem.appendChild(newsDescription);
+                            newsItem.appendChild(newsPubDate);
+
+                            newsContainer.appendChild(newsItem);
+                        }
+                    })
+                    .catch(error => console.error('Error fetching the XML:', error));
+            };
+
+            // Initial fetch
+            fetchAndUpdateNews();
+
+            // Set interval to fetch and update every 5 minutes (300000 milliseconds)
+            setInterval(fetchAndUpdateNews, 300000);
         });
     </script>
 </body>
