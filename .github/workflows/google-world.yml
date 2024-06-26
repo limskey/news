@@ -19,7 +19,7 @@ jobs:
     - name: Download RSS feed
       run: |
         mkdir -p daily
-        curl -o daily/google-world.xml "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFZxYUdjU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen"
+        curl -o daily/google-world.xml "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen"
 
     - name: Commit and push changes
       env:
