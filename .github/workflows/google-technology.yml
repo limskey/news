@@ -1,4 +1,4 @@
-name: Download Google News RSS Feed
+name: google-technology
 
 on:
   schedule:
