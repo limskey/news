@@ -1,0 +1,32 @@
+name: Download Google News RSS Feed
+
+on:
+  schedule:
+    - cron: '0 * * * *' # This cron expression runs the job every 60 minutes
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  download-rss:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Download RSS feed
+      run: |
+        mkdir -p daily
+        curl -o daily/google-health.xml "https://news.google.com/rss/topics/CAAqIQgKIhtDQkFTRGdvSUwyMHZNR3QwTlRFU0FtVnVLQUFQAQ?hl=en-US&gl=US&ceid=US%3Aen"
+
+    - name: Commit and push changes
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+        git add daily/google-news.xml
+        git commit -m "Update Google News RSS feed"
+        git push
