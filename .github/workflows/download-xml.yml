@@ -3,6 +3,7 @@ name: Download Google News RSS Feed
 on:
   schedule:
     - cron: '0 * * * *' # This cron expression runs the job every 60 minutes
+  workflow_dispatch:
 
 jobs:
   download-rss:
