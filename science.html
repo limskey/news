@@ -19,12 +19,6 @@
             top: 0;
             z-index: 1000;
         }
-        nav .logo {
-            color: white;
-            font-size: 24px;
-            padding: 14px 20px;
-            text-decoration: none;
-        }
         nav ul {
             list-style-type: none;
             padding: 0;
@@ -76,6 +70,7 @@
             color: white;
             background-color: #333;
             font-size: 24px;
+            text-align: center;
         }
         h2 {
             text-align: center;
@@ -92,7 +87,7 @@
         }
         .rss-item a {
             text-decoration: none;
-            color: #2E2F35  ;
+            color: #2E2F35;
         }
         .rss-item img {
             max-width: 100%;
@@ -111,27 +106,25 @@
         }
         body a:hover {
             color: blue;
+        }
     </style>
 </head>
 <body>
-</head>
-<body>
-
     <nav>
         <ul>
             <li><a href="./index.html">Top News</a></li>
             <li><a href="./world.html">World News</a></li>
             <li><a href="./tech.html">Tech</a></li>
-            <li><a href="./cyber.html">Cyber</a></li>
             <li><a href="./business.html">Business</a></li>
+            <li><a href="./science.html">Science</a></li>
             <li><a href="./health.html">Health</a></li>
         </ul>
     </nav>
 
-    <h1><center>C&P: Science News</center></h1>
+    <h1>C&P: Top Science News</h1>
     <div class="main-container">
         <div class="content-column">
-            <div id="rss-feed-topnews"></div>
+            <div id="news-container"></div>
         </div>
     </div>
 
@@ -139,59 +132,45 @@
         &copy; 2024 Complaining & Explaining. All rights reserved.
     </footer>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        const feeds = [
-            { id: "rss-feed-topnews", url: "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFp0Y1RjU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen" },
-        ];
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('https://raw.githubusercontent.com/limskey/news/main/daily/google-science.xml')
+                .then(response => response.text())
+                .then(data => {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(data, "application/xml");
+                    const items = xmlDoc.getElementsByTagName("item");
+                    const newsContainer = document.getElementById("news-container");
 
-        const maxArticles = 10;
-        let articleCount = 0;
+                    for (let i = 0; i < items.length; i++) {
+                        const title = items[i].getElementsByTagName("title")[0].textContent;
+                        const link = items[i].getElementsByTagName("link")[0].textContent;
+                        let description = items[i].getElementsByTagName("description")[0].textContent;
+                        const pubDate = items[i].getElementsByTagName("pubDate")[0].textContent;
 
-        function fetchFeeds() {
-            feeds.forEach(feed => {
-                const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`;
-                const fetchPage = (page) => {
-                    if (articleCount >= maxArticles) return;
+                        // Replace color in description
+                        description = description.replace(/<font color="#6f6f6f">/g, '<font color="darkgreen">');
 
-                    $.getJSON(apiUrl + `&page=${page}`, function(data) {
-                        const feedContainer = $(`#${feed.id}`);
-                        
-                        // Sort items by pubDate descending
-                        data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
-                        
-                        data.items.forEach(item => {
-                            if (articleCount < maxArticles) {
-                                const feedItem = `
-                                    <div class="rss-item">
-                                        <h3><a href="${item.link}" target="_blank">${item.title}</a></h3>
-                                        <p>${item.pubDate}</p>
-                                        <p>${item.description}</p>
-                                    </div>
-                                `;
-                                feedContainer.append(feedItem);
-                                articleCount++;
-                            }
-                        });
+                        const newsItem = document.createElement("div");
+                        newsItem.classList.add("rss-item");
 
-                        // Check if there are more pages to fetch
-                        if (data.items.length > 0 && articleCount < maxArticles) {
-                            fetchPage(page + 1);
-                        }
-                    }).fail(function() {
-                        console.error("Error fetching feed: ", feed.url);
-                    });
-                }
+                        const newsTitle = document.createElement("h3");
+                        newsTitle.innerHTML = `<a href="${link}" target="_blank">${title}</a>`;
 
-                $(`#${feed.id}`).empty(); // Clear the existing feed items
-                articleCount = 0; // Reset the counter
-                fetchPage(1); // Start fetching from the first page
-            });
-        }
+                        const newsDescription = document.createElement("p");
+                        newsDescription.innerHTML = description;
 
-        $(document).ready(function() {
-            fetchFeeds(); // Initial fetch
-            setInterval(fetchFeeds, 900000); // Fetch every 15 minutes
+                        const newsPubDate = document.createElement("p");
+                        newsPubDate.textContent = new Date(pubDate).toLocaleString();
+
+                        newsItem.appendChild(newsTitle);
+                        newsItem.appendChild(newsDescription);
+                        newsItem.appendChild(newsPubDate);
+
+                        newsContainer.appendChild(newsItem);
+                    }
+                })
+                .catch(error => console.error('Error fetching the XML:', error));
         });
     </script>
 </body>
