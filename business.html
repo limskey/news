@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -134,45 +134,42 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const fetchAndUpdateNews = () => {
-                fetch('https://raw.githubusercontent.com/limskey/news/main/daily/google-business.xml')
-                    .then(response => response.text())
-                    .then(data => {
-                        const parser = new DOMParser();
-                        const xmlDoc = parser.parseFromString(data, "application/xml");
-                        const items = xmlDoc.getElementsByTagName("item");
-                        const newsContainer = document.getElementById("news-container");
+            fetch('https://raw.githubusercontent.com/limskey/news/main/daily/google-business.xml')
+                .then(response => response.text())
+                .then(data => {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(data, "application/xml");
+                    const items = xmlDoc.getElementsByTagName("item");
+                    const newsContainer = document.getElementById("news-container");
 
-                        newsContainer.innerHTML = ""; // Clear previous content
+                    for (let i = 0; i < items.length; i++) {
+                        const title = items[i].getElementsByTagName("title")[0].textContent;
+                        const link = items[i].getElementsByTagName("link")[0].textContent;
+                        let description = items[i].getElementsByTagName("description")[0].textContent;
+                        const pubDate = items[i].getElementsByTagName("pubDate")[0].textContent;
 
-                        for (let i = 0; i < items.length; i++) {
-                            const title = items[i].getElementsByTagName("title")[0].textContent;
-                            const link = items[i].getElementsByTagName("link")[0].textContent;
-                            let description = items[i].getElementsByTagName("description")[0].textContent;
-                            const pubDate = items[i].getElementsByTagName("pubDate")[0].textContent;
+                        // Replace color in description
+                        description = description.replace(/<font color="#6f6f6f">/g, '<font color="darkgreen">');
 
-                            // Replace color in description
-                            description = description.replace(/<font color="#6f6f6f">/g, '<font color="darkgreen">');
+                        const newsItem = document.createElement("div");
+                        newsItem.classList.add("rss-item");
 
-                            const newsItem = document.createElement("div");
-                            newsItem.classList.add("rss-item");
+                        const newsTitle = document.createElement("h3");
+                        newsTitle.innerHTML = <a href="${link}" target="_blank">${title}</a>;
 
-                            const newsTitle = document.createElement("h3");
-                            newsTitle.innerHTML = `<a href="${link}" target="_blank">${title}</a>`;
+                        const newsDescription = document.createElement("p");
+                        newsDescription.innerHTML = description;
 
-                            const newsDescription = document.createElement("p");
-                            newsDescription.innerHTML = description;
+                        const newsPubDate = document.createElement("p");
+                        newsPubDate.textContent = new Date(pubDate).toLocaleString();
 
-                            const newsPubDate = document.createElement("p");
-                            newsPubDate.textContent = new Date(pubDate).toLocaleString();
+                        newsItem.appendChild(newsTitle);
+                        newsItem.appendChild(newsDescription);
+                        newsItem.appendChild(newsPubDate);
 
-                            newsItem.appendChild(newsTitle);
-                            newsItem.appendChild(newsDescription);
-                            newsItem.appendChild(newsPubDate);
-
-                            newsContainer.appendChild(newsItem);
-                        }
-                    })
+                        newsContainer.appendChild(newsItem);
+                    }
+                })
                 .catch(error => console.error('Error fetching the XML:', error));
         });
     </script>
