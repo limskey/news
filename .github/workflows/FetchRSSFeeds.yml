@@ -1,35 +1,28 @@
-name: Fetch RSS Feeds
+name: Download XML File
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Runs daily at midnight UTC
-  workflow_dispatch: # Allows manual triggering of the workflow
+    - cron: '0 * * * *' # This cron expression runs the job every 60 minutes
 
 jobs:
-  fetch-feeds:
+  download-xml:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
-
-    - name: Install feedparser
-      run: pip install feedparser
-
-    - name: Fetch and save feeds
-      run: python fetch_feeds.py
-
-    - name: Commit and push feeds
+    - name: Download XML file
       run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git add daily/
-        git commit -m "Daily feed update"
+        mkdir -p daily
+        curl -o daily/file.xml https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFZxYUdjU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+        git add daily/file.xml
+        git commit -m "Update XML file"
         git push
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
