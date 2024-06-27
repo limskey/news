@@ -11,7 +11,7 @@
             padding: 0;
         }
         nav {
-            background-color: #333;
+            background-color: #fff;
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -33,14 +33,20 @@
         }
         nav ul li a {
             display: block;
-            color: white;
+            color: #1F2023; 
+            background-color: transparent; 
             text-align: center;
             padding: 14px 20px;
             text-decoration: none;
         }
         nav ul li a:hover {
-            background-color: #ddd;
-            color: black;
+            color: blue; 
+            background-color: transparent; 
+        }
+        nav ul li a.active {
+            color: blue; 
+            text-decoration: underline; 
+            background-color: transparent; 
         }
         .main-container {
             display: flex;
@@ -96,8 +102,8 @@
             margin: 10px 0;
         }
         footer {
-            background-color: #333;
-            color: white;
+            background-color: #fff;
+            color: black;
             text-align: center;
             padding: 10px 0;
             position: relative;
@@ -112,15 +118,14 @@
 <body>
     <nav>
         <ul>
-            <li><a href="./index.html">Top News</a></li>
+            <li><a href="./index.html" >Top News</a></li>
             <li><a href="./world.html">World News</a></li>
-            <li><a href="./tech.html">Tech</a></li>
-            <li><a href="./science.html">Science</a></li>
+            <li><a href="./tech.html" >Tech</a></li>
+            <li><a href="./science.html" class="active">Science</a></li>
             <li><a href="./health.html">Health</a></li>
         </ul>
     </nav>
 
-    <h1>C&P: Science News</h1>
     <div class="main-container">
         <div class="content-column">
             <div id="news-container"></div>
